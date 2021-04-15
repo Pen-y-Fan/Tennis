@@ -1,51 +1,44 @@
-class TennisGame1(private val player1Name: String, private val player2Name: String) : TennisGame {
+class TennisGame1(private val playerOneName: String, private val playerTwoName: String) : TennisGame {
 
-    private var m_score1: Int = 0
-    private var m_score2: Int = 0
+    private var playerOneScore: Int = 0
+    private var playerTwoScore: Int = 0
 
     override fun wonPoint(playerName: String) {
-        if (playerName === "player1")
-            m_score1 += 1
+        if (playerName === playerOneName)
+            playerOneScore++
         else
-            m_score2 += 1
+            playerTwoScore++
     }
 
     override fun getScore(): String {
-        var score = ""
-        var tempScore = 0
-        if (m_score1 == m_score2) {
-            when (m_score1) {
-                0 -> score = "Love-All"
-                1 -> score = "Fifteen-All"
-                2 -> score = "Thirty-All"
-                else -> score = "Deuce"
-            }
-        } else if (m_score1 >= 4 || m_score2 >= 4) {
-            val minusResult = m_score1 - m_score2
-            if (minusResult == 1)
-                score = "Advantage player1"
-            else if (minusResult == -1)
-                score = "Advantage player2"
-            else if (minusResult >= 2)
-                score = "Win for player1"
-            else
-                score = "Win for player2"
-        } else {
-            for (i in 1..2) {
-                if (i == 1)
-                    tempScore = m_score1
-                else {
-                    score += "-"
-                    tempScore = m_score2
-                }
-                when (tempScore) {
-                    0 -> score += "Love"
-                    1 -> score += "Fifteen"
-                    2 -> score += "Thirty"
-                    3 -> score += "Forty"
-                }
-            }
+        if (playerOneScore == playerTwoScore) return equalPlayerScore()
+        if (playerOneScore >= 4 || playerTwoScore >= 4) return advantageOrWinForPlayer()
+        return scoringGame()
+    }
+
+    private fun scoringGame() = getPlayerScore(playerOneScore) + "-" + getPlayerScore(playerTwoScore)
+
+    private fun equalPlayerScore(): String {
+        return if (playerOneScore >= 3) "Deuce"
+        else "${getPlayerScore(playerOneScore)}-All"
+    }
+
+    private fun advantageOrWinForPlayer(): String {
+        val scoreDifference = playerOneScore - playerTwoScore
+        return when {
+            (scoreDifference == 1) -> "Advantage $playerOneName"
+            (scoreDifference == -1) -> "Advantage $playerTwoName"
+            (scoreDifference >= 2) -> "Win for $playerOneName"
+            else -> "Win for $playerTwoName"
         }
-        return score
+    }
+
+    private fun getPlayerScore(score: Int): String {
+        return when (score) {
+            0 -> "Love"
+            1 -> "Fifteen"
+            2 -> "Thirty"
+            else -> "Forty"
+        }
     }
 }

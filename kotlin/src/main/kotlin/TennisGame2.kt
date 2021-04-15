@@ -1,115 +1,56 @@
-class TennisGame2(private val player1Name: String, private val player2Name: String) : TennisGame {
-    var P1point: Int = 0
-    var P2point: Int = 0
+import kotlin.math.absoluteValue
 
-    var P1res: String = ""
-    var P2res: String = ""
+class TennisGame2(private val player1Name: String, private val player2Name: String) : TennisGame {
+    private var playerOnePoints: Int = 0
+    private var playerTwoPoints: Int = 0
+
+    private val scores: Array<String> = arrayOf("Love", "Fifteen", "Thirty", "Forty")
 
     override fun getScore(): String {
-        var score = ""
-        if (P1point == P2point && P1point < 4) {
-            if (P1point == 0)
-                score = "Love"
-            if (P1point == 1)
-                score = "Fifteen"
-            if (P1point == 2)
-                score = "Thirty"
-            score += "-All"
-        }
-        if (P1point == P2point && P1point >= 3)
-            score = "Deuce"
 
-        if (P1point > 0 && P2point == 0) {
-            if (P1point == 1)
-                P1res = "Fifteen"
-            if (P1point == 2)
-                P1res = "Thirty"
-            if (P1point == 3)
-                P1res = "Forty"
+        if (isEqualGame()) return getEqualScore()
 
-            P2res = "Love"
-            score = "$P1res-$P2res"
-        }
-        if (P2point > 0 && P1point == 0) {
-            if (P2point == 1)
-                P2res = "Fifteen"
-            if (P2point == 2)
-                P2res = "Thirty"
-            if (P2point == 3)
-                P2res = "Forty"
+        if (isLoveGame()) return getLoveScore()
 
-            P1res = "Love"
-            score = "$P1res-$P2res"
-        }
+        if (isScoringGame()) return getPlayersScore()
 
-        if (P1point > P2point && P1point < 4) {
-            if (P1point == 2)
-                P1res = "Thirty"
-            if (P1point == 3)
-                P1res = "Forty"
-            if (P2point == 1)
-                P2res = "Fifteen"
-            if (P2point == 2)
-                P2res = "Thirty"
-            score = "$P1res-$P2res"
-        }
-        if (P2point > P1point && P2point < 4) {
-            if (P2point == 2)
-                P2res = "Thirty"
-            if (P2point == 3)
-                P2res = "Forty"
-            if (P1point == 1)
-                P1res = "Fifteen"
-            if (P1point == 2)
-                P1res = "Thirty"
-            score = "$P1res-$P2res"
-        }
+        if (isWinningGame()) return getWinningPlayer()
 
-        if (P1point > P2point && P2point >= 3) {
-            score = "Advantage player1"
-        }
-
-        if (P2point > P1point && P1point >= 3) {
-            score = "Advantage player2"
-        }
-
-        if (P1point >= 4 && P2point >= 0 && P1point - P2point >= 2) {
-            score = "Win for player1"
-        }
-        if (P2point >= 4 && P1point >= 0 && P2point - P1point >= 2) {
-            score = "Win for player2"
-        }
-        return score
+        return getAdvantagePlayer()
     }
 
-    fun SetP1Score(number: Int) {
-
-        for (i in 0 until number) {
-            P1Score()
-        }
-
+    private fun getAdvantagePlayer(): String {
+        return if (doesPlayerOneHaveHigherScore()) "Advantage $player1Name" else "Advantage $player2Name"
     }
 
-    fun SetP2Score(number: Int) {
-
-        for (i in 0 until number) {
-            P2Score()
-        }
-
+    private fun getWinningPlayer(): String {
+        return if (doesPlayerOneHaveHigherScore()) "Win for $player1Name" else "Win for $player2Name"
     }
 
-    fun P1Score() {
-        P1point++
+    private fun isWinningGame() = ((playerOnePoints >= 4 || playerTwoPoints >= 4)
+            && (playerOnePoints - playerTwoPoints).absoluteValue >= 2)
+
+    private fun getPlayersScore() = "${scores[playerOnePoints]}-${scores[playerTwoPoints]}"
+
+    private fun isScoringGame() = playerOnePoints in (playerTwoPoints + 1)..3 || playerTwoPoints in (playerOnePoints + 1)..3
+
+    private fun getLoveScore(): String {
+        return if (doesPlayerOneHaveHigherScore())
+            "${scores[playerOnePoints]}-Love" else "Love-${scores[playerTwoPoints]}"
     }
 
-    fun P2Score() {
-        P2point++
+    private fun doesPlayerOneHaveHigherScore() = playerOnePoints > playerTwoPoints
+
+    private fun isLoveGame() = (playerOnePoints == 0 || playerTwoPoints == 0)
+            && (playerOnePoints in 1..3 || playerTwoPoints in 1..3)
+
+    private fun getEqualScore(): String {
+        return if (playerOnePoints < 3) "${scores[playerOnePoints]}-All" else "Deuce"
     }
 
-    override fun wonPoint(player: String) {
-        if (player === "player1")
-            P1Score()
-        else
-            P2Score()
+    private fun isEqualGame() = playerOnePoints == playerTwoPoints
+
+    override fun wonPoint(playerName: String) {
+        if (playerName === player1Name) playerOnePoints++ else playerTwoPoints++
     }
 }
