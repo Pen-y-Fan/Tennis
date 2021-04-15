@@ -6,6 +6,8 @@ There are three versions of this refactoring kata, each with their own design sm
 
 If you like this Kata, you may be interested in [my books](https://leanpub.com/u/emilybache) and website [SammanCoaching.org](https://sammancoaching.org)
 
+![Tennis Refactoring Kata Kotlin](tennis.png)
+
 ## Kata Description
 
 Here is a description of the problem this code is designed to solve: [Tennis Kata](https://sammancoaching.org/kata_descriptions/tennis.html). 
@@ -19,3 +21,6 @@ Here is a description of the problem this code is designed to solve: [Tennis Kat
 * What would you say to your colleague if they had written this code?
 * What would you say to your boss about the value of this refactoring work? Was there more reason to do it over and above the extra billable hour or so?
 
+## Refactor
+
+My refactor of the Kotlin code is under the refactor branch. Please only look once you have had a go yourself!
